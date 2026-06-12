@@ -4,6 +4,11 @@
 
 **Offline-first architecture** — the browser’s local database (IndexedDB via **Dexie**) is the **source of truth for writes**. The UI never waits on the network. Every user action is saved locally first, then an **operation queue** syncs to the server when connectivity is available.
 
+<img width="2240" height="1171" alt="image" src="https://github.com/user-attachments/assets/a7ee4067-50bd-44ed-aefa-683755d70812" />
+
+
+
+
 **Pattern in one line:** *Optimistic local write → enqueue mutation → background sync (push/pull) → eventual consistency.*
 
 | Layer | Technology | Role |
