@@ -3,7 +3,7 @@ import { productQuerySchema } from '@oftmp/shared';
 import type { Env } from '../config/env.js';
 import { authMiddleware } from '../middleware/index.js';
 import { validateQuery } from '../middleware/validate.js';
-import { getProductById, getShopStats, listProducts } from '../services/product.service.js';
+import { getShopStats, listProducts } from '../services/product.service.js';
 
 export function createProductRoutes(env: Env) {
   const router = Router();
@@ -12,15 +12,6 @@ export function createProductRoutes(env: Env) {
     try {
       const result = await listProducts(env, req.query as never);
       res.json(result);
-    } catch (error) {
-      next(error);
-    }
-  });
-
-  router.get('/:id', async (req, res, next) => {
-    try {
-      const product = await getProductById(env, String(req.params.id));
-      res.json({ data: product });
     } catch (error) {
       next(error);
     }

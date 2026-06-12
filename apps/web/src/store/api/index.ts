@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import type { AuthTokens, Order, PaginatedMeta, Product, ShopStats, User } from '@oftmp/shared';
+import type { AuthTokens, Order, PaginatedMeta, Product, ShopStats } from '@oftmp/shared';
 import type { LoginInput, ProductQueryInput } from '@oftmp/shared';
 import { offlineAwareBaseQuery, getApiBaseUrl } from './baseApi.js';
 import { clearSession, setSession } from '../../offline/db/database.js';
@@ -7,7 +7,7 @@ import { clearSession, setSession } from '../../offline/db/database.js';
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: offlineAwareBaseQuery,
-  tagTypes: ['Product', 'Cart', 'Wishlist', 'Orders', 'Shop', 'Auth'],
+  tagTypes: ['Product', 'Orders', 'Shop', 'Auth'],
   endpoints: () => ({}),
 });
 
@@ -34,10 +34,6 @@ export const authApi = api.injectEndpoints({
           await clearSession();
         }
       },
-    }),
-    getMe: builder.query<User, void>({
-      query: () => '/auth/me',
-      providesTags: ['Auth'],
     }),
   }),
 });
@@ -74,11 +70,6 @@ export const productsApi = api.injectEndpoints({
         }
       },
     }),
-    getProduct: builder.query<Product, string>({
-      query: (id) => `/products/${id}`,
-      transformResponse: (response: { data: Product }) => response.data,
-      providesTags: (_r, _e, id) => [{ type: 'Product', id }],
-    }),
   }),
 });
 
@@ -102,13 +93,8 @@ export const ordersApi = api.injectEndpoints({
   }),
 });
 
-export const {
-  useLoginMutation,
-  useLogoutMutation,
-  useGetMeQuery,
-} = authApi;
-
-export const { useGetProductsQuery, useGetProductQuery } = productsApi;
+export const { useLoginMutation, useLogoutMutation } = authApi;
+export const { useGetProductsQuery } = productsApi;
 export const { useGetShopStatsQuery } = shopApi;
 export const { useGetOrdersQuery } = ordersApi;
 export { getApiBaseUrl };

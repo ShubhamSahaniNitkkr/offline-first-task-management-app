@@ -74,6 +74,3 @@ export async function clearSession() {
   await db.syncMetadata.delete('currentUserId');
 }
 
-export async function getCurrentUserId(): Promise<string | null> {
-  return getSyncMetadata('currentUserId');
-}

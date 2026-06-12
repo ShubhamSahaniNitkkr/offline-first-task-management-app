@@ -107,7 +107,7 @@ export function useCartMutations() {
       logOfflineStep('Operation queue', `${count} change(s) waiting to sync`, 'waiting');
     }
 
-    dispatch(api.util.invalidateTags(['Cart', 'Shop']));
+    dispatch(api.util.invalidateTags(['Shop']));
     return db.cartItems.where('productId').equals(product.id).first();
   };
 
@@ -138,7 +138,7 @@ export function useCartMutations() {
       logOfflineStep('IndexedDB', 'Cart item quantity updated', 'completed');
     }
 
-    dispatch(api.util.invalidateTags(['Cart']));
+    dispatch(api.util.invalidateTags(['Shop']));
   };
 
   const removeFromCart = async (cartItemId: string) => {
@@ -155,7 +155,7 @@ export function useCartMutations() {
       logOfflineStep('IndexedDB', 'Cart item deleted locally', 'completed');
     }
 
-    dispatch(api.util.invalidateTags(['Cart', 'Shop']));
+    dispatch(api.util.invalidateTags(['Shop']));
   };
 
   const checkout = async () => {
@@ -225,7 +225,7 @@ export function useCartMutations() {
     }
 
     await db.cartItems.clear();
-    dispatch(api.util.invalidateTags(['Cart', 'Orders', 'Shop']));
+    dispatch(api.util.invalidateTags(['Orders', 'Shop']));
 
     if (offline) {
       logOfflineStep('Cart', 'Cart cleared after offline checkout', 'completed');

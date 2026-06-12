@@ -98,7 +98,7 @@ npm run test:e2e
 
 ## Architecture
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full design document.
+See the **Folder Structure** section below for how the codebase is organized.
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -106,7 +106,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full design document.
 └───────────────────────────┬─────────────────────────────┘
                             │ HTTPS
 ┌───────────────────────────▼─────────────────────────────┐
-│ Express API + SQLite (dev) / PostgreSQL (production)    │
+│ Express API + SQLite                                    │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -116,7 +116,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full design document.
 
 **What:** A design pattern where the local data store is the primary write target; the network enhances but never blocks the user.
 
-**Why we used it:** Users must create, edit, and assign tasks without connectivity. No work is lost.
+**Why we used it:** Shoppers can browse, cart, wishlist, and checkout without connectivity. No action is lost.
 
 **Alternatives:** Online-only SPA, simple PWA cache, CRDT sync (Yjs), Firebase offline.
 
@@ -161,21 +161,14 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full design document.
 5. Pull incremental changes via `/api/v1/sync/pull`
 6. Update local state + BroadcastChannel to other tabs
 
-### 6. How Conflict Resolution Works
-
-- Optimistic locking via integer `version` field
-- Server returns **409** when `clientVersion ≠ serverVersion`
-- Conflict modal: Keep mine / Keep theirs
-- Configurable default: Last Write Wins, Server Wins, or Ask
-
-### 7. How Optimistic Updates Work
+### 6. How Optimistic Updates Work
 
 1. Write to Dexie immediately with `syncStatus: 'pending'`
 2. Invalidate RTK Query cache for instant UI
 3. On server success → replace clientId, mark `synced`
 4. On failure → retry with exponential backoff; rollback on non-retryable errors
 
-### 8. How Retry Mechanisms Work
+### 7. How Retry Mechanisms Work
 
 ```
 delay = min(1000ms × 2^retryCount + jitter, 60000ms)
@@ -184,13 +177,13 @@ maxRetries = 5
 
 Non-retryable: 400, 401, 403, 404, 422
 
-### 9. How RTK Query is Used
+### 8. How RTK Query is Used
 
-- **Server state:** tasks, comments, users, dashboard stats
-- **Offline-aware baseQuery:** reads from Dexie when `navigator.onLine === false`
-- **Tag invalidation:** mutations invalidate `Task`, `Dashboard` tags
+- **Server state:** products, orders, shop stats
+- **Offline-aware baseQuery:** reads from Dexie when offline
+- **Tag invalidation:** sync invalidates `Product`, `Orders`, `Shop` tags
 
-### 10. Tradeoffs and Alternatives
+### 9. Tradeoffs and Alternatives
 
 | Approach | Pros | Cons |
 |----------|------|------|
@@ -203,7 +196,7 @@ Non-retryable: 400, 401, 403, 404, 422
 
 | Layer | Responsibility |
 |-------|----------------|
-| **Redux Toolkit** | UI state, theme, sync status, conflicts |
+| **Redux Toolkit** | Sync status, offline pipeline UI |
 | **RTK Query** | Server-fetched entities, cache |
 | **Dexie** | Offline records, operation queue, preferences |
 
@@ -226,22 +219,11 @@ Base URL: `/api/v1`
 | Endpoint | Description |
 |----------|-------------|
 | `POST /auth/login` | Authenticate |
-| `GET /tasks` | List tasks (paginated, filterable) |
-| `POST /tasks` | Create task |
-| `PATCH /tasks/:id` | Update task (requires version) |
+| `GET /products` | Product catalog (paginated) |
+| `GET /orders` | User orders |
+| `GET /shop/stats` | Shop summary stats |
 | `POST /sync/push` | Batch push offline operations |
 | `GET /sync/pull?since=` | Incremental pull |
-
-## Accessibility
-
-- WCAG 2.1 AA target
-- Skip links, focus traps, ARIA live regions for sync status
-- Keyboard-navigable Kanban board
-- `prefers-reduced-motion` respected
-
-## Monitoring
-
-Sentry integration ready via `PUBLIC_SENTRY_DSN` (web) and `SENTRY_DSN` (api).
 
 ## Deploy to Render
 

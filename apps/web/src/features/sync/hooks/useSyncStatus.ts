@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks.js';
 import {
-  addConflict,
   setLastSyncAt,
   setOnline,
   setQueueCount,
@@ -39,15 +38,10 @@ export function useSyncStatus() {
           dispatch(setSyncing(false));
           dispatch(setLastSyncAt(new Date().toISOString()));
           void getQueueCount().then((count) => dispatch(setQueueCount(count)));
-          dispatch(api.util.invalidateTags(['Product', 'Cart', 'Orders', 'Shop']));
+          dispatch(api.util.invalidateTags(['Product', 'Orders', 'Shop']));
           break;
         case 'sync_failed':
           dispatch(setSyncing(false));
-          break;
-        case 'conflict_detected':
-          if (event.conflict && typeof event.conflict === 'object' && 'entityId' in event.conflict) {
-            dispatch(addConflict((event.conflict as { entityId: string }).entityId));
-          }
           break;
         case 'offline_mode':
           dispatch(setOnline(false));
@@ -64,7 +58,7 @@ export function useSyncStatus() {
 
     const unsubCrossTab = subscribeCrossTab((msg) => {
       if (msg.type === 'QUEUE_CHANGED') {
-        dispatch(api.util.invalidateTags(['Product', 'Cart', 'Orders', 'Shop']));
+        dispatch(api.util.invalidateTags(['Product', 'Orders', 'Shop']));
       }
     });
 

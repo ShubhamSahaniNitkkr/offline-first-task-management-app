@@ -6,7 +6,7 @@ test.describe('Offline ecommerce flow', () => {
     await page.getByLabel('Email').fill('demo@example.com');
     await page.getByLabel('Password').fill('password123');
     await page.getByRole('button', { name: 'Sign in' }).click();
-    await expect(page).toHaveURL(/dashboard/);
+    await expect(page).toHaveURL(/shop/);
     await expect(page.getByText('Discover something new')).toBeVisible();
   });
 
@@ -15,7 +15,7 @@ test.describe('Offline ecommerce flow', () => {
     await page.getByLabel('Email').fill('demo@example.com');
     await page.getByLabel('Password').fill('password123');
     await page.getByRole('button', { name: 'Sign in' }).click();
-    await page.waitForURL(/dashboard/);
+    await page.waitForURL(/shop/);
 
     await context.setOffline(true);
     await page.getByRole('button', { name: 'Go offline' }).click();

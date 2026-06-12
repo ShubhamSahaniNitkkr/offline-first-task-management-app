@@ -31,13 +31,3 @@ const navigationHandler = new NetworkFirst({
 });
 
 registerRoute(new NavigationRoute(navigationHandler));
-
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'task-sync') {
-    event.waitUntil(
-      self.clients.matchAll({ type: 'window' }).then((clients) => {
-        clients.forEach((client) => client.postMessage({ type: 'BACKGROUND_SYNC' }));
-      }),
-    );
-  }
-});

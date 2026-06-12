@@ -1,24 +1,7 @@
 import { Router } from 'express';
 import type { Env } from '../config/env.js';
 import { authMiddleware, getAuthReq } from '../middleware/index.js';
-import { listUsers } from '../services/auth.service.js';
 import { pullChanges, pushOperations } from '../services/sync.service.js';
-
-export function createUserRoutes(env: Env) {
-  const router = Router();
-  router.use(authMiddleware(env));
-
-  router.get('/', async (_req, res, next) => {
-    try {
-      const users = await listUsers(env);
-      res.json({ data: users });
-    } catch (error) {
-      next(error);
-    }
-  });
-
-  return router;
-}
 
 export function createSyncRoutes(env: Env) {
   const router = Router();

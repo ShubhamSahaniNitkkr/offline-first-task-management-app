@@ -38,7 +38,7 @@ export function LoginForm() {
     setLoginError(null);
     try {
       await login(data).unwrap();
-      window.location.href = '/dashboard';
+      window.location.href = '/shop';
     } catch {
       setLoginError('Invalid email or password');
     }

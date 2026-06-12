@@ -5,7 +5,7 @@ import { errorHandler } from './middleware/index.js';
 import { createAuthRoutes } from './routes/auth.routes.js';
 import { createOrderRoutes } from './routes/orders.routes.js';
 import { createProductRoutes, createShopRoutes } from './routes/products.routes.js';
-import { createSyncRoutes, createUserRoutes } from './routes/sync.routes.js';
+import { createSyncRoutes } from './routes/sync.routes.js';
 
 export function createApp(env: Env) {
   const app = express();
@@ -27,7 +27,6 @@ export function createApp(env: Env) {
   api.use('/products', createProductRoutes(env));
   api.use('/orders', createOrderRoutes(env));
   api.use('/shop', createShopRoutes(env));
-  api.use('/users', createUserRoutes(env));
   api.use('/sync', createSyncRoutes(env));
 
   app.use('/api/v1', api);

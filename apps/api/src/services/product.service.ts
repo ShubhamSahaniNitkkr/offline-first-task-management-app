@@ -5,8 +5,6 @@ import { PRODUCT_CATEGORIES } from '@oftmp/shared';
 import type { Env } from '../config/env.js';
 import { getDb } from '../db/index.js';
 import { products } from '../db/schema.js';
-import { AppError } from '../lib/errors.js';
-
 const CATALOG: Array<Omit<Product, 'id' | 'createdAt' | 'updatedAt'>> = [
   { name: 'Aurora Wireless Headphones', description: 'Premium noise-cancelling with 40h battery.', price: 249.99, category: 'Electronics', imageUrl: '', rating: 4.8, stock: 32, featured: true },
   { name: 'Lumen Smart Watch', description: 'Titanium case, health tracking, sapphire glass.', price: 399.0, category: 'Electronics', imageUrl: '', rating: 4.7, stock: 18, featured: true },
@@ -116,13 +114,6 @@ export async function listProducts(env: Env, query: ProductQueryInput) {
       totalPages: Math.ceil((totalResult?.value ?? 0) / query.limit),
     },
   };
-}
-
-export async function getProductById(env: Env, id: string): Promise<Product> {
-  const db = getDb(env.DATABASE_URL);
-  const [row] = await db.select().from(products).where(eq(products.id, id)).limit(1);
-  if (!row) throw new AppError(404, 'NOT_FOUND', 'Product not found');
-  return mapProduct(row);
 }
 
 export async function getShopStats(env: Env): Promise<ShopStats> {

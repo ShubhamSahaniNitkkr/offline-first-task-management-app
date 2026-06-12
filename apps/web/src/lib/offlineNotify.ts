@@ -9,7 +9,6 @@ export function favouriteMessage(productName: string, added: boolean, isOffline:
   if (added && isOffline) {
     return `${productName} — saved to favourites. Will sync when you are back online.`;
   }
-  if (added) return productName;
   return productName;
 }
 

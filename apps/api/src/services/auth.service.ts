@@ -81,8 +81,3 @@ export async function getUserById(env: Env, id: string): Promise<User | null> {
   return row ? mapUser(row) : null;
 }
 
-export async function listUsers(env: Env): Promise<User[]> {
-  const db = getDb(env.DATABASE_URL);
-  const rows = await db.select().from(users);
-  return rows.map(mapUser);
-}

@@ -1,8 +1,8 @@
 {
-  "name": "offline-first-task-management-app",
+  "name": "shubham-sunny-shop",
   "private": true,
   "version": "1.0.0",
-  "description": "Enterprise-grade offline-first task management platform",
+  "description": "Offline-first ecommerce PWA — Shubham Sunny Shop",
   "workspaces": [
     "apps/*",
     "packages/*"

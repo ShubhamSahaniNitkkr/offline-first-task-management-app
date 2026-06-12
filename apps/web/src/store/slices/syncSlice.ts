@@ -17,7 +17,6 @@ interface SyncState {
   isSyncing: boolean;
   queueCount: number;
   lastSyncAt: string | null;
-  conflicts: string[];
   activities: OfflineActivity[];
   /** Stays true after Go offline — panel only collapses, never hides. */
   offlinePipelineVisible: boolean;
@@ -30,7 +29,6 @@ const initialState: SyncState = {
   isSyncing: false,
   queueCount: 0,
   lastSyncAt: null,
-  conflicts: [],
   activities: [],
   offlinePipelineVisible: false,
   offlinePipelineMinimized: false,
@@ -56,14 +54,6 @@ const syncSlice = createSlice({
     },
     setLastSyncAt(state, action: PayloadAction<string | null>) {
       state.lastSyncAt = action.payload;
-    },
-    addConflict(state, action: PayloadAction<string>) {
-      if (!state.conflicts.includes(action.payload)) {
-        state.conflicts.push(action.payload);
-      }
-    },
-    removeConflict(state, action: PayloadAction<string>) {
-      state.conflicts = state.conflicts.filter((c) => c !== action.payload);
     },
     logOfflineActivity(
       state,
@@ -95,8 +85,6 @@ export const {
   setSyncing,
   setQueueCount,
   setLastSyncAt,
-  addConflict,
-  removeConflict,
   logOfflineActivity,
   clearOfflineActivities,
   showOfflinePipeline,
