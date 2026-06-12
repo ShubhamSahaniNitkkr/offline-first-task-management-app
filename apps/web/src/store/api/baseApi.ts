@@ -7,11 +7,10 @@ import {
 import { db, getAccessToken } from '../../offline/db/database.js';
 import { isEffectivelyOnline } from '../../offline/networkGate.js';
 import { logOfflineStep } from '../../offline/offlineActivityLogger.js';
-
-const API_URL = import.meta.env.PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
+import { resolveApiBaseUrl } from '../../lib/apiUrl.js';
 
 const rawBaseQuery = fetchBaseQuery({
-  baseUrl: API_URL,
+  baseUrl: resolveApiBaseUrl(),
   prepareHeaders: async (headers) => {
     const token = await getAccessToken();
     if (token) headers.set('Authorization', `Bearer ${token}`);
@@ -80,5 +79,5 @@ export const offlineAwareBaseQuery: BaseQueryFn<
 };
 
 export function getApiBaseUrl() {
-  return API_URL;
+  return resolveApiBaseUrl();
 }

@@ -7,12 +7,14 @@ interface Props {
 }
 
 const { title } = Astro.props;
+const apiBaseUrl = import.meta.env.PUBLIC_API_URL;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <Meta title={title} />
+    {apiBaseUrl && <meta name="api-base-url" content={apiBaseUrl} />}
   </head>
   <body>
     <slot />

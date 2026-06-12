@@ -12,8 +12,7 @@ import { detectConflict } from './conflictResolver.js';
 import { isEffectivelyOnline } from '../networkGate.js';
 import { logOfflineStep } from '../offlineActivityLogger.js';
 import { getNextRetryTimestamp, isNonRetryableStatus, isRetryableStatus } from './retryStrategy.js';
-
-const API_URL = import.meta.env.PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
+import { resolveApiBaseUrl } from '../../lib/apiUrl.js';
 const SYNC_FETCH_TIMEOUT_MS = 15_000;
 const TAB_ID =
   typeof crypto !== 'undefined' && 'randomUUID' in crypto
@@ -117,7 +116,7 @@ class SyncEngine {
         await markOperationProcessing(op.id);
 
         try {
-          const response = await fetchWithTimeout(`${API_URL}/sync/push`, {
+          const response = await fetchWithTimeout(`${resolveApiBaseUrl()}/sync/push`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -240,7 +239,7 @@ class SyncEngine {
     const since = lastSync?.value ?? new Date(0).toISOString();
 
     const response = await fetchWithTimeout(
-      `${API_URL}/sync/pull?since=${encodeURIComponent(since)}`,
+      `${resolveApiBaseUrl()}/sync/pull?since=${encodeURIComponent(since)}`,
       { headers: { Authorization: `Bearer ${token}` } },
     );
 

@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react';
 import {
+  Alert,
   Badge,
   Box,
+  Code,
   Group,
   SimpleGrid,
   Stack,
@@ -19,13 +21,14 @@ import { db } from '../../../offline/db/database.js';
 import { ProductCard } from './ProductCard.js';
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue.js';
 import { ShopStatsBar } from './ShopStatsBar.js';
+import { getApiBaseUrl } from '../../../store/api/index.js';
 
 export function ShopHome() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<string | null>(null);
   const [debouncedSearch] = useDebouncedValue(search, 300);
 
-  const { data, isLoading, isFetching } = useGetProductsQuery({
+  const { data, isLoading, isFetching, isError, error } = useGetProductsQuery({
     search: debouncedSearch || undefined,
     category: (category as never) || undefined,
     limit: 50,
@@ -51,6 +54,29 @@ export function ShopHome() {
       </Box>
 
       <ShopStatsBar />
+
+      {isError && (
+        <Alert color="red" variant="light" title="Could not load products from the API">
+          <Stack gap="xs">
+            <Text size="sm">
+              The shop UI could not reach the backend. This is usually{' '}
+              <strong>CORS</strong> or a wrong <strong>API URL</strong> on Render.
+            </Text>
+            <Text size="sm">
+              API URL in use: <Code>{getApiBaseUrl()}</Code>
+            </Text>
+            <Text size="sm" c="dimmed">
+              On the API service, set <Code>CORS_ORIGIN</Code> to your static site URL (no trailing
+              slash). On the static site, set <Code>PUBLIC_API_URL</Code> and redeploy.
+            </Text>
+            {error && 'status' in error && (
+              <Text size="xs" c="dimmed">
+                HTTP status: {String(error.status)}
+              </Text>
+            )}
+          </Stack>
+        </Alert>
+      )}
 
       {featured.length > 0 && !debouncedSearch && !category && (
         <Stack gap="md">

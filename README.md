@@ -290,9 +290,35 @@ Render sets `PORT` automatically — do not hardcode it.
 
 ### 5. Smoke test
 
-1. Open the static site URL → **Login** with `demo@example.com` / `password123`.
-2. Add items to cart, use **Go offline**, add more items, then go back online — sync banner should clear after queue drains.
-3. API health: `https://<api-host>/health`
+1. Open `https://<api-host>/api/v1/products` in the browser — should return JSON with a `data` array of products.
+2. Open the static site URL → **Login** with `demo@example.com` / `password123`.
+3. Shop page should show products. If you see a red API error banner, fix CORS / `PUBLIC_API_URL` (see below).
+4. API health: `https://<api-host>/health`
+
+### API returns 404 `Not Found` (plain text) for `/health` or `/api/v1/products`
+
+Plain-text **"Not Found"** (not JSON) means the **Node app is not running** — Render’s edge is responding, not Express.
+
+1. Render → **API service** → **Logs** — look for `JWT_SECRET` or startup errors.
+2. **Environment** tab — set:
+   - `JWT_SECRET` = any random string **32+ characters**
+   - `CORS_ORIGIN` = your static site URL (e.g. `https://shubham-sunny-shop-web.onrender.com`)
+   - `DATABASE_URL` = `./data/app.db`
+3. Confirm **Root Directory** is **empty** (repo root).
+4. **Start Command:** `npm run start -w @oftmp/api`
+5. **Manual Deploy** → wait until Live.
+6. Test: `https://<api-host>/health` must return **JSON** `{"status":"ok",...}` — not plain "Not Found".
+
+### UI shows no data (health OK)
+
+| Check | Fix |
+|-------|-----|
+| `PUBLIC_API_URL` missing at **static site build** | Set to `https://<api-host>/api/v1`, then **manual redeploy** the static site |
+| `CORS_ORIGIN` wrong on API | Set to exact frontend origin, e.g. `https://shubham-sunny-shop-web.onrender.com` (no trailing `/`) |
+| Service names differ | If API is not `…-api` / web is `…-web`, you **must** set `PUBLIC_API_URL` explicitly |
+| Products empty on API | Open `/api/v1/products` — if empty, redeploy API (seeds on first boot) |
+
+The frontend auto-detects `…-web.onrender.com` → `…-api.onrender.com` when `PUBLIC_API_URL` was not set at build time.
 
 ### Render checklist
 

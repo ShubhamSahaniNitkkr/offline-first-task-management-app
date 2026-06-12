@@ -12,10 +12,15 @@ async function main() {
   await seedProducts(env);
 
   const app = createApp(env);
-  app.listen(env.PORT, () => {
-    console.log(`API server running on http://localhost:${env.PORT}`);
-    console.log(`Health check: http://localhost:${env.PORT}/health`);
+  app.listen(env.PORT, '0.0.0.0', () => {
+    console.log(`API server running on port ${env.PORT}`);
+    console.log(`Health: /health and /api/v1/health`);
+    console.log(`Products: /api/v1/products`);
+    console.log(`CORS origin: ${env.CORS_ORIGIN}`);
   });
 }
 
-main().catch(console.error);
+main().catch((err) => {
+  console.error('Failed to start API server:', err);
+  process.exit(1);
+});
