@@ -314,11 +314,26 @@ Render sets `PORT` automatically — do not hardcode it.
 
 ### Render checklist
 
+- [ ] **Root Directory** is repo root (leave empty) — not `apps/api`
+- [ ] **Node 20** — set env `NODE_VERSION=20.18.0` (or use repo `.node-version` file)
 - [ ] API build + start commands use npm workspaces (`-w @oftmp/api`)
 - [ ] `JWT_SECRET` set on API
 - [ ] `PUBLIC_API_URL` set on static site **before** build
 - [ ] `CORS_ORIGIN` on API matches static site origin
 - [ ] Free-tier services spin down when idle (first request may be slow)
+
+### Render build failed (`better-sqlite3` / `node-gyp`)
+
+This usually means Render used **Node 22+** and tried to compile SQLite from source.
+
+**Fix:**
+1. Add environment variable: `NODE_VERSION` = `20.18.0`
+2. Set **Root Directory** to repo root (empty), not `apps/api`
+3. **Build:** `npm install && npm run build -w @oftmp/shared && npm run build -w @oftmp/api`
+4. **Start:** `npm run start -w @oftmp/api`
+5. Redeploy
+
+Or use the included `render.yaml` blueprint: **New** → **Blueprint** → connect repo.
 
 ## License
 

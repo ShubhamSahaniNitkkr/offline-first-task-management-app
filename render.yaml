@@ -1,0 +1,30 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: shubham-sunny-shop-api
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build -w @oftmp/shared && npm run build -w @oftmp/api
+    startCommand: npm run start -w @oftmp/api
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        value: ./data/app.db
+      - key: CORS_ORIGIN
+        sync: false
+
+staticSites:
+  - name: shubham-sunny-shop-web
+    buildCommand: npm install && npm run build -w @oftmp/shared && npm run build -w @oftmp/web
+    staticPublishPath: ./apps/web/dist
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
+      - key: PUBLIC_API_URL
+        sync: false

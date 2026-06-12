@@ -21,7 +21,7 @@
     "clean:install": "npm run clean && npm cache clean --force && npm install"
   },
   "engines": {
-    "node": ">=20.0.0",
+    "node": "20.x",
     "npm": ">=9.0.0"
   },
   "overrides": {
