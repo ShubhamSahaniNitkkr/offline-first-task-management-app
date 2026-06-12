@@ -4,7 +4,7 @@ services:
     name: shubham-sunny-shop-api
     runtime: node
     plan: free
-    buildCommand: npm install && npm run build -w @oftmp/shared && npm run build -w @oftmp/api
+    buildCommand: npm run render:build:api
     startCommand: npm run start -w @oftmp/api
     healthCheckPath: /health
     envVars:
@@ -21,7 +21,7 @@ services:
 
 staticSites:
   - name: shubham-sunny-shop-web
-    buildCommand: npm install && npm run build -w @oftmp/shared && npm run build -w @oftmp/web
+    buildCommand: npm run render:build:web
     staticPublishPath: ./apps/web/dist
     envVars:
       - key: NODE_VERSION

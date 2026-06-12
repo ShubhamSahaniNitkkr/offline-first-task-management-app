@@ -261,7 +261,7 @@ Render deploys from Git. Commit and push this repo to GitHub (or GitLab).
 | **Name** | `shubham-sunny-shop-api` (or any name) |
 | **Root Directory** | *(leave empty — repo root)* |
 | **Runtime** | Node |
-| **Build Command** | `npm install && npm run build -w @oftmp/shared && npm run build -w @oftmp/api` |
+| **Build Command** | `npm run render:build:api` |
 | **Start Command** | `npm run start -w @oftmp/api` |
 
 3. **Environment variables** (Environment tab):
@@ -289,7 +289,7 @@ Render sets `PORT` automatically — do not hardcode it.
 |-------|--------|
 | **Name** | `shubham-sunny-shop-web` |
 | **Root Directory** | *(repo root)* |
-| **Build Command** | `npm install && npm run build -w @oftmp/shared && npm run build -w @oftmp/web` |
+| **Build Command** | `npm run render:build:web` |
 | **Publish Directory** | `apps/web/dist` |
 
 3. **Environment variable** (required at **build** time):
@@ -329,11 +329,26 @@ This usually means Render used **Node 22+** and tried to compile SQLite from sou
 **Fix:**
 1. Add environment variable: `NODE_VERSION` = `20.18.0`
 2. Set **Root Directory** to repo root (empty), not `apps/api`
-3. **Build:** `npm install && npm run build -w @oftmp/shared && npm run build -w @oftmp/api`
+3. **Build:** `npm run render:build:api` (not plain `npm install` — see esbuild note below)
 4. **Start:** `npm run start -w @oftmp/api`
 5. Redeploy
 
 Or use the included `render.yaml` blueprint: **New** → **Blueprint** → connect repo.
+
+### Render build failed (`esbuild` version mismatch)
+
+```
+Error: Expected "0.28.1" but got "0.25.12"
+```
+
+This happens when a **full** `npm install` at repo root installs both API (`tsx` → esbuild 0.28) and web (`vite` → esbuild 0.25). npm hoists the wrong binary on Linux.
+
+**Fix (already in this repo):**
+1. Use workspace-scoped install scripts — **API:** `npm run render:build:api`, **Web:** `npm run render:build:web`
+2. Push `package.json`, `package-lock.json`, and `.npmrc`
+3. In Render → your service → **Settings** → **Clear build cache** → **Manual Deploy**
+
+Do **not** set Root Directory to `apps/api` or `apps/web` — leave it empty (monorepo root).
 
 ## License
 

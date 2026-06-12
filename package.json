@@ -18,7 +18,11 @@
     "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "clean": "rm -rf node_modules apps/api/node_modules apps/web/node_modules packages/shared/node_modules",
-    "clean:install": "npm run clean && npm cache clean --force && npm install"
+    "clean:install": "npm run clean && npm cache clean --force && npm install",
+    "render:install:api": "npm ci --include-workspace-root -w @oftmp/shared -w @oftmp/api",
+    "render:install:web": "npm ci --include-workspace-root -w @oftmp/shared -w @oftmp/web",
+    "render:build:api": "npm run render:install:api && npm run build -w @oftmp/shared && npm run build -w @oftmp/api",
+    "render:build:web": "npm run render:install:web && npm run build -w @oftmp/shared && npm run build -w @oftmp/web"
   },
   "engines": {
     "node": "20.x",
