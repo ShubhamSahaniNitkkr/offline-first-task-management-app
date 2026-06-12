@@ -332,6 +332,12 @@ This happens when a **full** `npm install` at repo root installs both API (`tsx`
 
 Do **not** set Root Directory to `apps/api` or `apps/web` — leave it empty (monorepo root).
 
+### Render build failed (`Could not find a declaration file for module 'express'`)
+
+Render sets `NODE_ENV=production`, which makes `npm ci` **skip devDependencies** (`@types/*`, `typescript`). The API `tsc` build then fails.
+
+**Fix (already in this repo):** install scripts use `npm ci --include=dev` so types are installed during the build step. Push latest `package.json` and redeploy.
+
 ## License
 
 MIT
